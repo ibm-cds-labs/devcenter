@@ -1,0 +1,22 @@
+doctype html
+html(lang="en")
+head
+  include head.jade
+body
+  include nav.jade
+
+  div.container
+      
+    div
+      a.btn.btn-default(href="/doc") Create New Document
+      
+    h2 Existing documents
+    ul
+      - for(var i in docs.rows) {
+        - if (!docs.rows[i].id.match(/^_design/))
+          li 
+            - var d = docs.rows[i].doc;
+              a(href="/doc/#{d._id}") #{d.name} (#{d.type})  
+            - }
+
+

@@ -1,0 +1,20 @@
+{
+  "name": "devcenter",
+  "version": "0.0.1",
+  "description": "Article uploader for Dev Center",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.12.3",
+    "cfenv": "1.0.x",
+    "cloudant": "^1.0.0-beta3",
+    "express": "4.12.x",
+    "express-session": "^1.11.1",
+    "jade": "^1.9.2",
+    "moment": "^2.10.2",
+    "request": "^2.55.0",
+    "unfluff": "^0.10.0"
+  },
+  "repository": {}
+}

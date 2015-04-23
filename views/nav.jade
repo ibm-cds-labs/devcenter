@@ -1,0 +1,8 @@
+if session && session.loggedin
+  nav.navbar.navbar-inverse.navbar-fixed-top(role="navigation")
+    div.container
+      div.navbar-header.hidden-xs.hidden-sm
+        a.navbar-brand(href="/") DevCenter Uploader
+        
+      a.btn.btn-default.navbar-btn(href="/menu",type="button") Menu
+      a.btn.btn-default.navbar-btn(href="/logout",type="button") Logout
