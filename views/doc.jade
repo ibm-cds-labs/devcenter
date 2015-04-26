@@ -17,6 +17,8 @@ body
       input(type="hidden",name="_id",value="#{doc._id}")
       input(type="hidden",name="_rev",value="#{doc._rev}")
       input(type="hidden",name="created_at",value="#{doc.created_at}")
+      input(type="hidden",name="full_name",value="#{doc.full_name}")
+      
       
       div.form-group
         label(for="url") URL
