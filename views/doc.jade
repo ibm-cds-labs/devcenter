@@ -78,10 +78,30 @@ body
       div.form-group
         label(for="body") Body
         textarea.form-control(id="body",name="body") #{doc.body}
-        
+      
+      div.form-group
+        label(for="githuburl") GitHub URL
+        input.form-control(id="githuburl",type="url",name="githuburl",value="#{doc.githuburl}")        
+
+      div.form-group
+        label(for="videourl") Video URL
+        input.form-control(id="videourl",type="url",name="videourl",value="#{doc.videourl}")         
+
+      div.form-group
+        label(for="demourl") Demo URL
+        input.form-control(id="demourl",type="url",name="demourl",value="#{doc.demourl}")         
+
+      div.form-group
+        label(for="documentationurl") Documentation URL
+        input.form-control(id="documentationurl",type="url",name="documentationurl",value="#{doc.documentationurl}")         
+
+      div.form-group
+        label(for="otherurl") Other URL
+        input.form-control(id="otherurl",type="url",name="otherurl",value="#{doc.otherurl}")         
+             
       div.form-group
         label(for="related") Related
-        textarea.form-control(id="related",name="related",value="#{doc.related.join(',')}")  
+        input.form-control(id="related",name="related",data-role="tagsinput",value="#{doc.related.join(',')}")  
       
       div.form-group#error
 

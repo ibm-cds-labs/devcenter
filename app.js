@@ -98,7 +98,12 @@ app.get('/doc', function(req,res) {
        "featured":false,
        "body": "",
        "related": [],
-       "imageurl":""
+       "imageurl":"",
+       "githuburl": "",
+       "videourl": "",
+       "demourl": "",
+       "documentationurl": "",
+       "otherurl": ""
     };
     res.render("doc", {session:req.session, doc:template});
   } else {
@@ -111,6 +116,11 @@ app.get('/doc/:id', function(req,res) {
    
     var id = req.params.id;
     dw.get(id, function(err, data) {
+      data.githuburl = (data.githuburl || "");
+      data.videourl = (data.videourl || "");
+      data.demourl = (data.demourl || "");
+      data.documentationurl = (data.documentationurl || "");
+      data.otherurl = (data.otherurl || "");
       res.render("doc", {session:req.session, doc:data});
     });
     
