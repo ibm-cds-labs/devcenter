@@ -7,6 +7,17 @@ body
 
   div.container
       
+    h2 Create new provisional document
+    div
+      form(id="provisional",onsubmit="return submitProvisional();")
+        div.form-group
+          input.form-control(id="url",type="url",name="url",value="",placeholder="Enter URL here")
+        div.form-group#error
+        button.btn.btn-default(type="submit") Submit
+      
+    hr 
+    
+    h2 Create new document \(all fields\)
     div
       a.btn.btn-default(href="/doc") Create New Document
       

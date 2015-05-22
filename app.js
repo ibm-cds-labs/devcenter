@@ -32,7 +32,59 @@ app.use(bodyParser.urlencoded({ extended: false }));
 var session = require('express-session');
 app.use(session({
   secret: 'devcenter'
-}))
+}));
+
+
+
+// automatically create meta data for a URL
+var autoMeta = function(doc, callback) {
+  // grab existing values
+  dw.view("search","breakdown", { group_level: 2 }, function(err, data) {
+    if(err) {
+      return callback("Something went wrong", doc);
+    }
+    var str = [doc.name,doc.full_name, doc.description, doc.body].join(" ");
+    str = str.replace(/\W+/g,' ');
+    var words = str.split(' ');
+    for(var i in data.rows) {
+      var key = data.rows[i].key;
+      if(words.indexOf(key[1]) > -1 && doc[key[0]].indexOf(key[1])==-1) {
+        doc[key[0]].push(key[1])
+      }
+    }
+    callback(err, doc);
+  });
+};
+
+
+var template =  {  
+   "_id": "",
+   "name":"",
+   "full_name":"",
+   "url":"",
+   "created_at":"",
+   "updated_at":"",
+   "languages":[  
+   ],
+   "technologies":[  
+   ],
+   "friendly_name":"",
+   "description":"",
+   "topic":[  
+   ],
+   "featured":false,
+   "body": "",
+   "related": [],
+   "imageurl":"",
+   "githuburl": "",
+   "videourl": "",
+   "demourl": "",
+   "documentationurl": "",
+   "otherurl": "",
+   "type": "Article",
+   "status": "Provisional",
+   "author": ""
+};
 
 // use the jade templating engine
 app.set('view engine', 'jade');
@@ -79,33 +131,8 @@ app.get('/menu', function(req,res) {
 
 app.get('/doc', function(req,res) {
   if (req.session.loggedin) {
-    var template =  {  
-       "_id": "",
-       "_rev": "",
-       "name":"",
-       "full_name":"",
-       "url":"",
-       "created_at":"",
-       "updated_at":"",
-       "languages":[  
-       ],
-       "technologies":[  
-       ],
-       "friendly_name":"",
-       "description":"",
-       "topic":[  
-       ],
-       "featured":false,
-       "body": "",
-       "related": [],
-       "imageurl":"",
-       "githuburl": "",
-       "videourl": "",
-       "demourl": "",
-       "documentationurl": "",
-       "otherurl": ""
-    };
-    res.render("doc", {session:req.session, doc:template});
+    var doc = JSON.parse(JSON.stringify(template));
+    res.render("doc", {session:req.session, doc:doc});
   } else {
     res.redirect("/");
   }
@@ -143,6 +170,28 @@ var split = function(str) {
 var now = function() {
   return moment().format("YYYY-MM-DD HH:mm:ss Z");
 }
+
+app.post('/submitprovisional', function(req,res) {
+  var doc = JSON.parse(JSON.stringify(template));
+  doc.url = req.body.url;
+  doc._id =  genhash(doc.url);
+  spider.url(doc.url, function(err, data) {
+    doc.body="";
+    doc.full_name="";
+    if (!err) {
+      doc.body=data.body;
+      doc.name = doc.full_name= data.full_name
+    }
+    autoMeta(doc, function(err, data) {
+      if(!err) {
+        doc = data;
+      }
+      dw.insert(doc, function(err, data){
+        res.send({"ok":(err==null), "error": err, "reply": data});
+      })
+    });
+  }); 
+})
 
 app.post('/submitdoc', function(req,res) {
   if (req.session.loggedin) {

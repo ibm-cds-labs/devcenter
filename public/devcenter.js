@@ -48,6 +48,30 @@ var checkLogin = function() {
   return false;
 };
 
+var submitProvisional = function() {
+  console.log("Submitting");
+  var doc = $('#provisional').serialize();
+  console.log(doc);
+  var req = {
+    url: "/submitprovisional",
+    method: "post",
+    data: $('#provisional').serialize(),
+    dataType: "json"
+  };
+  $.ajax(req).done(function(msg) {
+    if(msg.ok==true) {
+      renderStatus(JSON.stringify(msg))
+    } else {
+      renderError(msg.error);
+    }
+  }).fail(function(msg) {
+    renderError("Something went wrong");
+  });
+
+  return false;
+  
+}
+
 var submitDoc = function() {
   console.log("Submitting");
   var doc = $('#doc').serialize();

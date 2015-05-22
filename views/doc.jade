@@ -29,6 +29,15 @@ body
           input.form-control(id="url",type="url",name="url")
         - }
         
+      div.form-group
+        label(for="status") Status
+        select.form-control(name="status")
+          -var thelevels=["Provisional","Live","Deleted"];
+          -for(var i in thelevels){
+          -var val = (doc.status)?doc.status:"Live";
+          option(value="#{thelevels[i]}",selected=(val==thelevels[i])) #{thelevels[i]}
+          -}
+        
         
       div.form-group
         label(for="name") Name
