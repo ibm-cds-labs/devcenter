@@ -1,0 +1,21 @@
+{
+  "_id": "_design/search",
+  "views": {
+    "breakdown": {
+      "reduce": "_count",
+      "map": "function (doc) {\n  for(var i in doc.languages) {\n    emit([\"languages\",doc.languages[i]], null);\n  }\n  for(var j in doc.technologies) {\n    emit([\"technologies\",doc.technologies[j]], null);\n  }\n  for(var k in doc.topic) {\n    emit([\"topic\",doc.topic[k]], null);\n  }\n}"
+    },
+    "bystatus": {
+      "reduce": "_count",
+      "map": "function (doc) {\n  if(typeof doc.status === \"string\") {\n    emit(doc.status, {name: doc.name, url:doc.url});\n  }\n}"
+    }
+  },
+  "language": "javascript",
+  "indexes": {
+    "search": {
+      "analyzer": "standard",
+      "index": "function (doc) {\n if (doc.status && doc.status === \"Live\") {\n   index(\"name\", doc.name);\n   index(\"full_name\", doc.full_name);\n   index(\"description\", doc.description);\n   index(\"body\", doc.body);\n   var def = [ doc.name, doc.full_name, doc.description, doc.body, doc.languages.join(\" \"), doc.technologies.join(\" \"), doc.topic.join(\" \"), doc.type, doc.level];\n   index(\"default\", def.join(\" \"));\n   for (var i in doc.languages) {\n     index(\"language\", doc.languages[i], { facet:true});\n   }  \n   for (var i in doc.technologies) {\n     index(\"technology\", doc.technologies[i], { facet:true});\n   }\n   for (var i in doc.topic) {\n     index(\"topic\", doc.topic[i], { facet:true});\n   }\n   index(\"type\", doc.type, {facet:true});\n   index(\"date\", parseInt(doc.created_at.substring(0,10).replace(/[^0-9]/g,\"\"))); \n    index(\"level\", doc.level, {facet:true});\n }\n};"
+    }
+  },
+  "status": "Live"
+}

@@ -121,7 +121,7 @@ app.post('/login', function(req,res) {
 
 app.get('/menu', function(req,res) {
   if (req.session.loggedin) {
-    dw.list({include_docs:true},function(err,data) {
+    dw.view("search","bystatus", { reduce: false}, function(err,data) {
       res.render("menu", {session:req.session, docs: data});
     });
   } else {
