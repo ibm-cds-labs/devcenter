@@ -143,6 +143,9 @@ app.get('/doc/:id', function(req,res) {
    
     var id = req.params.id;
     dw.get(id, function(err, data) {
+      if(err) {
+        return res.status(404);
+      }
       data.githuburl = (data.githuburl || "");
       data.videourl = (data.videourl || "");
       data.demourl = (data.demourl || "");
@@ -171,9 +174,14 @@ var now = function() {
   return moment().format("YYYY-MM-DD HH:mm:ss Z");
 }
 
-app.post('/submitprovisional', function(req,res) {
+var submitProvisional = function(url, callback) {
+  var u = require('url');
+  var parsed = u.parse(url);
+  if(!parsed.hostname || !parsed.protocol) {
+    return callback("Invalid URL", null);
+  }
   var doc = JSON.parse(JSON.stringify(template));
-  doc.url = req.body.url;
+  doc.url = url;
   doc._id =  genhash(doc.url);
   spider.url(doc.url, function(err, data) {
     doc.body="";
@@ -187,10 +195,17 @@ app.post('/submitprovisional', function(req,res) {
         doc = data;
       }
       dw.insert(doc, function(err, data){
-        res.send({"ok":(err==null), "error": err, "reply": data});
+        console.log(err,data);
+        callback(err,data);
       })
     });
   }); 
+};
+
+app.post('/submitprovisional', function(req,res) {
+  submitProvisional(req.body.url, function(err,data) {
+    res.send({"ok":(err==null), "error": err, "reply": data});
+  });
 })
 
 app.post('/submitdoc', function(req,res) {
@@ -237,7 +252,27 @@ app.post('/submitdoc', function(req,res) {
 app.get('/logout', function(req,res) {
   req.session.loggedin=false;
   res.redirect("/");
-})
+});
+
+app.post('/slack', function(req,res) {
+  if(req.body.token && req.body.token == process.env.SLACK_TOKEN) {
+    var url = req.body.text;
+    if (typeof url == "string" && url.length>0) {
+      submitProvisional(url, function(err,data) {
+        if (err) {
+          res.send("There was an error :( " + err);
+        } else {
+          res.send("Thanks for submitting " + url + ". The URL will be published after it is reviewed by a human. " + 
+                     "https://devcenter.mybluemix.net/doc/"+data.id);
+        }
+      });
+    } else {
+      res.send("Syntax: /devcenter <url>   e.g. /devcenter http://mysite.com/");
+    }
+  } else {
+    res.send("Invalid request.");   
+  }
+});
 
 // get the app environment from Cloud Foundry
 var appEnv = cfenv.getAppEnv();
