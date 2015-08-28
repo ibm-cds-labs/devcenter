@@ -1,25 +1,10 @@
-# Node.js Starter Application
+# DevCenter Admin
 
-Bluemix provides a Node.js starter application as a template so that you can
-add your code and push the changes back to the Bluemix environment.
+This repository contains the code that presents a user-interface to the CDS Dev Center search engine
+of articles. The Dev Center Admin allows
 
-## Files
+* articles to be added and meta data added
+* edit the schema
+* see a list of provisional and live articles
+* submissions of articles via slack 'slash commands'
 
-The Node.js starter application has files as below:
-
-* app.js
-
-	This file contains the server side JavaScript code for your application
-	written using the express server package.
-
-* public/
-
-	This directory contains public resources of the application, that will be
-	served up by this server
-
-* package.json
-
-	This file contains metadata about your application, that is used by both
-	the `npm` program to install packages, but also Bluemix when it's
-	staging your application.  For more information, see:
-	<https://docs.npmjs.com/files/package.json>

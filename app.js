@@ -16,7 +16,7 @@ var cfenv = require('cfenv');
 var app = express();
 
 var cloudant = require('./lib/db.js');
-var dw = cloudant.db.use('dw');
+var db = cloudant.db.use('devcenter');
 
 // moment
 var moment = require('moment');
@@ -34,12 +34,12 @@ app.use(session({
   secret: 'devcenter'
 }));
 
-
+var schema = require('./lib/schema.js');
 
 // automatically create meta data for a URL
 var autoMeta = function(doc, callback) {
   // grab existing values
-  dw.view("search","breakdown", { group_level: 2 }, function(err, data) {
+  db.view("search","breakdown", { group_level: 2 }, function(err, data) {
     if(err) {
       return callback("Something went wrong", doc);
     }
@@ -83,7 +83,8 @@ var template =  {
    "otherurl": "",
    "type": "Article",
    "status": "Provisional",
-   "author": ""
+   "author": "",
+   "namespace": []
 };
 
 // use the jade templating engine
@@ -121,7 +122,7 @@ app.post('/login', function(req,res) {
 
 app.get('/menu', function(req,res) {
   if (req.session.loggedin) {
-    dw.view("search","bystatus", { reduce: false}, function(err,data) {
+    db.view("search","bystatus", { reduce: false}, function(err,data) {
       res.render("menu", {session:req.session, docs: data});
     });
   } else {
@@ -142,7 +143,7 @@ app.get('/doc/:id', function(req,res) {
   if (req.session.loggedin) {
    
     var id = req.params.id;
-    dw.get(id, function(err, data) {
+    db.get(id, function(err, data) {
       if(err) {
         return res.status(404);
       }
@@ -151,6 +152,7 @@ app.get('/doc/:id', function(req,res) {
       data.demourl = (data.demourl || "");
       data.documentationurl = (data.documentationurl || "");
       data.otherurl = (data.otherurl || "");
+      data.namespace = (data.namespace || []);
       res.render("doc", {session:req.session, doc:data});
     });
     
@@ -194,7 +196,7 @@ var submitProvisional = function(url, callback) {
       if(!err) {
         doc = data;
       }
-      dw.insert(doc, function(err, data){
+      db.insert(doc, function(err, data){
         console.log(err,data);
         callback(err,data);
       })
@@ -223,6 +225,7 @@ app.post('/submitdoc', function(req,res) {
     doc.related = split(doc.related);
     doc.featured = false;
     doc.updated_at = now();
+    doc.namespace = split(doc.namespace);
     if(!doc.created_at || doc.created_at.length==0) {
       doc.created_at = now();
     }
@@ -234,12 +237,12 @@ app.post('/submitdoc', function(req,res) {
           doc.body=data.body;
           doc.full_name= data.full_name
         }
-        dw.insert(doc, function(err, data){
+        db.insert(doc, function(err, data){
           res.send({"ok":(err==null), "error": err, "reply": data});
         })
       }); 
     } else {
-      dw.insert(doc, function(err, data){
+      db.insert(doc, function(err, data){
         res.send({"ok":(err==null), "error": err, "reply": data});
       });
     }
