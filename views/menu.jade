@@ -24,36 +24,41 @@ body
     h2 Provisional documents
     ul
       - var status = "";
-      - for(var i in docs.rows) {
-        - var d = docs.rows[i];
-        - if (docs.rows[i].key == "Provisional") { 
-          li
-            a(href="/doc/#{d.id}") 
-              b #{d.value.name}
-            br 
-            span(class="muted") #{d.value.url}
+      - if (docs && docs.rows) {
+        - for(var i in docs.rows) {
+          - var d = docs.rows[i];
+          - if (docs.rows[i].key == "Provisional") { 
+            li
+              a(href="/doc/#{d.id}") 
+                b #{d.value.name}
+              br 
+              span(class="muted") #{d.value.url}
+            - }
           - }
-        - }
-        
+      - }
     h2 Live documents
     ul
       - var status = "";
-      - for(var i in docs.rows) {
-        - var d = docs.rows[i];
-        - if (docs.rows[i].key == "Live") { 
-          li
-            a(href="/doc/#{d.id}") #{d.value.name}
-           - }
-        - }      
+      - if (docs && docs.rows) {
+        - for(var i in docs.rows) {
+          - var d = docs.rows[i];
+          - if (docs.rows[i].key == "Live") { 
+            li
+              a(href="/doc/#{d.id}") #{d.value.name}
+             - }
+          - }      
+        - }
 
     h2 Deleted documents
     ul
       - var status = "";
-      - for(var i in docs.rows) {
-        - var d = docs.rows[i];
-        - if (d.key == "Deleted") { 
-          li
-            a(href="/doc/#{d.id}") #{d.value.name}
-          - }
-        - }      
+      - if (docs && docs.rows) {
+        - for(var i in docs.rows) {
+          - var d = docs.rows[i];
+          - if (d.key == "Deleted") { 
+            li
+              a(href="/doc/#{d.id}") #{d.value.name}
+            - }
+          - }   
+        - }   
 

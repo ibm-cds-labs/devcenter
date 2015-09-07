@@ -133,7 +133,12 @@ app.get('/menu', function(req,res) {
 app.get('/doc', function(req,res) {
   if (req.session.loggedin) {
     var doc = JSON.parse(JSON.stringify(template));
-    res.render("doc", {session:req.session, doc:doc});
+    var fixedfields = require('./lib/fixedfields.js');
+    console.log("fixedfields",fixedfields);
+    schema.load(function(err, s) {
+      console.log("schema",s);
+      res.render("doc", {session:req.session, doc:doc, fixedfields: fixedfields, schema: s});
+    });
   } else {
     res.redirect("/");
   }
@@ -143,18 +148,22 @@ app.get('/doc/:id', function(req,res) {
   if (req.session.loggedin) {
    
     var id = req.params.id;
-    db.get(id, function(err, data) {
-      if(err) {
-        return res.status(404);
-      }
-      data.githuburl = (data.githuburl || "");
-      data.videourl = (data.videourl || "");
-      data.demourl = (data.demourl || "");
-      data.documentationurl = (data.documentationurl || "");
-      data.otherurl = (data.otherurl || "");
-      data.namespace = (data.namespace || []);
-      res.render("doc", {session:req.session, doc:data});
+    var fixedfields = require('./lib/fixedfields.js');
+    schema.load(function(err, s) {
+      db.get(id, function(err, data) {
+        if(err) {
+          return res.status(404);
+        }
+        data.githuburl = (data.githuburl || "");
+        data.videourl = (data.videourl || "");
+        data.demourl = (data.demourl || "");
+        data.documentationurl = (data.documentationurl || "");
+        data.otherurl = (data.otherurl || "");
+        data.namespace = (data.namespace || []);
+        res.render("doc", {session:req.session, doc:data, fixedfields: fixedfields, schema: s});
+      });
     });
+
     
   } else {
     res.redirect("/");
