@@ -1,0 +1,30 @@
+doctype html
+html(lang="en")
+head
+  include head.jade
+body
+  script(type="text/javascript",src="/ace.js")
+  include nav.jade
+
+  div.container
+    div.header
+      h1 Edit schema 
+     
+      
+    form(id="doc",onsubmit="return submitSchema();")
+      div.form-group#error
+      button#schemasubmitbtn.btn.btn-default(type="submit") Submit
+      
+      div.form-group
+        div#editor #{JSON.stringify(schema,null,"  ")}
+              
+ 
+        
+      
+      script(type="text/javascript").
+        var editor = ace.edit("editor");
+//        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+
+
+

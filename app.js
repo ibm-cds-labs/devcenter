@@ -144,6 +144,27 @@ app.get('/doc', function(req,res) {
   }
 });
 
+app.get('/schema', function(req, res) {
+  if (req.session.loggedin) {
+    schema.load(function(err, s) {
+      res.render("schema", {session:req.session, schema: s});
+    });
+  } else {
+    res.redirect("/");
+  }
+});
+
+app.post('/schema', function(req, res) {
+  try {
+    var parsed = JSON.parse(req.body.schema);
+  } catch (e) {
+    return res.send({ok: false, err: "Invalid JSON"});
+  }
+  schema.saveAndGenerate(parsed, function(err, data) {
+    res.send(data);
+  });
+});
+
 app.get('/doc/:id', function(req,res) {
   if (req.session.loggedin) {
    
@@ -217,7 +238,7 @@ app.post('/submitprovisional', function(req,res) {
   submitProvisional(req.body.url, function(err,data) {
     res.send({"ok":(err==null), "error": err, "reply": data});
   });
-})
+});
 
 app.post('/submitdoc', function(req,res) {
   if (req.session.loggedin) {

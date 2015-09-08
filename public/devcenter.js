@@ -97,4 +97,31 @@ var submitDoc = function() {
 }
 
 
-
+var submitSchema= function() {
+  
+  var val = editor.getValue();
+  console.log(val);
+  try {
+    var parseval = JSON.parse(val);
+    $('#schemasubmitbtn').prop('disabled', true);
+    var req = {
+      url: "/schema",
+      method: "post",
+      data: {schema :JSON.stringify(parseval) }
+    };
+    $.ajax(req).done(function(msg) {
+      console.log(msg);
+      if(msg.ok==true) {
+        renderStatus(JSON.stringify(msg))
+      } else {
+        renderError(msg.error);
+      }
+    }).fail(function(msg) {
+      renderError("Something went wrong");
+    });
+    
+  } catch(e) {
+    renderError("Invalid JSON")
+  }
+  return false;
+}
