@@ -6,10 +6,7 @@ body { margin-top:70px;}
 }
 
 #editor { 
-    position: absolute;
-    top: 250px;
-    right: 0;
-    bottom: 0;
-    left: 0;
+
     height:400px;
+    width:400px;
 }

@@ -17,8 +17,16 @@ body
 
       each v, i in fixedfields
         div.form-group
-          label(for="#{i}") #{i}
-          input.form-control(type="text",id="#{i}",name="#{i}",value="#{doc[i]}")
+          if i == "status"
+            label(for="#{i}") #{i}
+            select.form-control(id="status",name="status")
+              each j in ["Provisional","Live","Deleted"]
+                option(selected= doc[i] == j) #{j}
+          else if i == "_id" || i == "_rev"
+            input.form-control(type="hidden",id="#{i}",name="#{i}",value="#{doc[i]}")
+          else
+            label(for="#{i}") #{i}
+            input.form-control(type="text",id="#{i}",name="#{i}",value="#{doc[i]}")
                   
       each v, i in schema
         div.form-group
@@ -29,7 +37,7 @@ body
               if typeof v.enforceValues == "boolean" && v.enforceValues && v.values
                 select.form-control(id="#{i}",name="#{i}")
                   each j in v.values
-                    option(selected="(#{doc[i]}==j)?'selected':''") #{j}
+                    option(selected= doc[i] == j) #{j}
               else
                 input.form-control(id="#{i}",type="text",name="#{i}",value="#{doc[i]}")
             if v.type == "number"
@@ -37,7 +45,7 @@ body
             if v.type == "boolean"
               select.form-control(id="#{i}",name="#{i}")
                 each j in ["false","true"]
-                  option(selected="(#{doc[i]}==j)?'selected':''") #{j}
+                  option(selected= doc[i] ==j) #{j}
             if v.type == "arrayofstrings"
               input.form-control(id="#{i}",type="text",name="#{i}",data-values="#{v.values.join(',')}",data-role="tagsinput",value="#{doc[i].join(',')}")
               span.help-block #{v.values.join(', ')}

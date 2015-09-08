@@ -13,13 +13,12 @@ body
       
     form(id="doc",onsubmit="return submitSchema();")
       div.form-group#error
-      button#schemasubmitbtn.btn.btn-default(type="submit") Submit
       
       div.form-group
         div#editor #{JSON.stringify(schema,null,"  ")}
               
+      button#schemasubmitbtn.btn.btn-default(type="submit") Submit
  
-        
       
       script(type="text/javascript").
         var editor = ace.edit("editor");

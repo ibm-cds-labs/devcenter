@@ -192,7 +192,7 @@ app.get('/doc/:id', function(req,res) {
 });
 
 var split = function(str) {
-  if(str.length==0) {
+  if(!str || str.length==0) {
     return [];
   }
   var s = str.split(",");
