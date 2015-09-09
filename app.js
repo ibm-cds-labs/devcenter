@@ -280,8 +280,17 @@ app.get('/logout', function(req,res) {
   res.redirect("/");
 });
 
+var checkToken = function(token) {
+  var tokenList = process.env.SLACK_TOKEN.split(",");
+  if (tokenList.indexOf(token) > -1) {
+    return true
+  } else {
+    return false;
+  }
+};
+
 app.post('/slack', function(req,res) {
-  if(req.body.token && req.body.token == process.env.SLACK_TOKEN) {
+  if(req.body.token && checkToken(req.body.token)) {
     var url = req.body.text;
     if (typeof url == "string" && url.length>0) {
       submitProvisional(url, function(err,data) {
@@ -289,7 +298,7 @@ app.post('/slack', function(req,res) {
           res.send("There was an error :( " + err);
         } else {
           res.send("Thanks for submitting " + url + ". The URL will be published after it is reviewed by a human. " + 
-                     "https://devcenter.mybluemix.net/doc/"+data.id);
+                     process.env.VCAP_APP_HOST  + "/doc/"+data.id);
         }
       });
     } else {
