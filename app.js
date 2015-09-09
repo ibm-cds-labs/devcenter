@@ -253,42 +253,52 @@ app.post('/submitprovisional', function(req,res) {
 });
 
 app.post('/submitdoc', function(req,res) {
+
+  
   if (req.session.loggedin) {
     
-    var doc = req.body;
+    schema.load(function(err, s) {
     
-    if(!doc._id || doc._id.length==0) {
-      doc._id =  genhash(doc.url);
-      delete doc._rev;
-    }
-    doc.languages = split(doc.languages);
-    doc.technologies = split(doc.technologies);
-    doc.topic = split(doc.topic);
-    doc.related = split(doc.related);
-    doc.featured = false;
-    doc.updated_at = now();
-    doc.namespace = split(doc.namespace);
-    if(!doc.created_at || doc.created_at.length==0) {
-      doc.created_at = now();
-    }
-    if(doc.body.length==0) {
-      spider.url(doc.url, function(err, data) {
-        doc.body="";
-        doc.full_name="";
-        if(!err) {
-          doc.body=data.body;
-          doc.full_name= data.full_name
+      var doc = req.body;
+    
+      if(!doc._id || doc._id.length==0) {
+        doc._id =  genhash(doc.url);
+        delete doc._rev;
+      }
+    
+      for(var i in s) {
+        var item = s[i];
+        if (typeof item == "object" && item.type == "arrayofstrings") {
+          doc[i] = split(doc[i]);
         }
+      }
+    
+
+      if(!doc.created_at || doc.created_at.length==0) {
+        doc.created_at = now();
+      }
+      
+      if(doc.body.length==0) {
+        spider.url(doc.url, function(err, data) {
+          doc.body="";
+          doc.full_name="";
+          if(!err) {
+            doc.body=data.body;
+            doc.full_name= data.full_name
+          }
+          db.insert(doc, function(err, data){
+            res.send({"ok":(err==null), "error": err, "reply": data});
+          })
+        }); 
+      } else {
         db.insert(doc, function(err, data){
           res.send({"ok":(err==null), "error": err, "reply": data});
-        })
-      }); 
-    } else {
-      db.insert(doc, function(err, data){
-        res.send({"ok":(err==null), "error": err, "reply": data});
-      });
-    }
+        });
+      }
     
+    });
+    
+  
   } else {
     res.redirect("/");
   }
