@@ -66,37 +66,6 @@ var autoMeta = function(doc, callback) {
   });
 };
 
-
-var template =  {  
-   "_id": "",
-   "name":"",
-   "full_name":"",
-   "url":"",
-   "created_at":"",
-   "updated_at":"",
-   "languages":[  
-   ],
-   "technologies":[  
-   ],
-   "friendly_name":"",
-   "description":"",
-   "topic":[  
-   ],
-   "featured":false,
-   "body": "",
-   "related": [],
-   "imageurl":"",
-   "githuburl": "",
-   "videourl": "",
-   "demourl": "",
-   "documentationurl": "",
-   "otherurl": "",
-   "type": "Article",
-   "status": "Provisional",
-   "author": "",
-   "namespace": []
-};
-
 // use the jade templating engine
 app.set('view engine', 'jade');
 
@@ -142,12 +111,11 @@ app.get('/menu', function(req,res) {
 
 app.get('/doc', function(req,res) {
   if (req.session.loggedin) {
-    var doc = JSON.parse(JSON.stringify(template));
-    var fixedfields = require('./lib/fixedfields.js');
-    console.log("fixedfields",fixedfields);
-    schema.load(function(err, s) {
-      console.log("schema",s);
-      res.render("doc", {session:req.session, doc:doc, fixedfields: fixedfields, schema: s});
+    schema.newDocument(function(err,d) {
+      var fixedfields = require('./lib/fixedfields.js');
+      schema.load(function(err, s) {
+        res.render("doc", {session:req.session, doc:doc, fixedfields: fixedfields, schema: s});
+      });
     });
   } else {
     res.redirect("/");
@@ -222,28 +190,31 @@ var submitProvisional = function(url, callback) {
   if(!parsed.hostname || !parsed.protocol) {
     return callback("Invalid URL", null);
   }
-  var doc = JSON.parse(JSON.stringify(template));
-  doc.url = url;
-  doc._id =  genhash(doc.url);
-  spider.url(doc.url, function(err, data) {
-    doc.body="";
-    doc.full_name="";
-    doc.updated_at = now();
-    doc.created_at = now();
-    if (!err) {
-      doc.body=data.body;
-      doc.name = doc.full_name= data.full_name
-    }
-    autoMeta(doc, function(err, data) {
-      if(!err) {
-        doc = data;
+  schema.newDocument(function(err, d) {
+    var doc = d;
+    delete doc._rev;
+    doc.url = url;
+    doc._id =  genhash(doc.url);
+    spider.url(doc.url, function(err, data) {
+      doc.body="";
+      doc.full_name="";
+      doc.updated_at = now();
+      doc.created_at = now();
+      if (!err) {
+        doc.body=data.body;
+        doc.name = doc.full_name= data.full_name
       }
-      db.insert(doc, function(err, data){
-        console.log(err,data);
-        callback(err,data);
-      })
-    });
-  }); 
+      autoMeta(doc, function(err, data) {
+        if(!err) {
+          doc = data;
+        }
+        db.insert(doc, function(err, data){
+          console.log(err,data);
+          callback(err,data);
+        })
+      });
+    }); 
+  });
 };
 
 app.post('/submitprovisional', function(req,res) {
