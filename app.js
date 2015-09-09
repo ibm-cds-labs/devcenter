@@ -38,21 +38,31 @@ var schema = require('./lib/schema.js');
 
 // automatically create meta data for a URL
 var autoMeta = function(doc, callback) {
+  
+  // process the document text
+  var str = [doc.name,doc.full_name, doc.description, doc.body].join(" ");
+  str = str.replace(/\W+/g,' ');
+  var words = str.split(' ');
+  
   // grab existing values
-  db.view("search","breakdown", { group_level: 2 }, function(err, data) {
-    if(err) {
-      return callback("Something went wrong", doc);
-    }
-    var str = [doc.name,doc.full_name, doc.description, doc.body].join(" ");
-    str = str.replace(/\W+/g,' ');
-    var words = str.split(' ');
-    for(var i in data.rows) {
-      var key = data.rows[i].key;
-      if(words.indexOf(key[1]) > -1 && doc[key[0]].indexOf(key[1])==-1) {
-        doc[key[0]].push(key[1])
+  
+  schema.load(function(err, s) {
+    for(var i in s) {
+      if (i != "_id" && i != "_rev") {
+        var item = s[i];
+        if(item.type == "arrayofstrings" && item.values && item.values.length >0) {
+          for (var j in item.values) {
+            var word = item.values[j];
+            if(words.indexOf(word) > -1 && doc[i].indexOf(word)==-1) {
+              doc[i].push(word)
+            }
+          }
+        }
       }
     }
+
     callback(err, doc);
+    
   });
 };
 
@@ -218,6 +228,8 @@ var submitProvisional = function(url, callback) {
   spider.url(doc.url, function(err, data) {
     doc.body="";
     doc.full_name="";
+    doc.updated_at = now();
+    doc.created_at = now();
     if (!err) {
       doc.body=data.body;
       doc.name = doc.full_name= data.full_name
