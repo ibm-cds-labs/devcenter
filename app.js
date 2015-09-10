@@ -280,9 +280,9 @@ app.get('/logout', function(req,res) {
   res.redirect("/");
 });
 
-var checkToken = function(token) {
-  var tokenList = process.env.SLACK_TOKEN.split(",");
-  if (tokenList.indexOf(token) > -1) {
+var checkToken = function(token, tokenlist) {
+  var tokenarr = tokenlist.split(",");
+  if (tokenarr.indexOf(token) > -1) {
     return true
   } else {
     return false;
@@ -290,7 +290,7 @@ var checkToken = function(token) {
 };
 
 app.post('/slack', function(req,res) {
-  if(req.body.token && checkToken(req.body.token)) {
+  if(req.body.token && checkToken(req.body.token, process.env.SLACK_TOKEN)) {
     var url = req.body.text;
     if (typeof url == "string" && url.length>0) {
       submitProvisional(url, function(err,data) {
@@ -306,6 +306,25 @@ app.post('/slack', function(req,res) {
     }
   } else {
     res.send("Invalid request.");   
+  }
+});
+
+app.post('/api/submit', function(req,res) {
+  if(req.body.token && checkToken(req.body.token, process.env.API_KEYS)) {
+    var url = req.body.url;
+    if (typeof url == "string" && url.length>0) {
+      submitProvisional(url, function(err,data) {
+        if (err) {
+          res.status(404).send({ ok: false, msg: "There was an error :( " + err});
+        } else {
+          res.send({ok: true, msg: "Thanks for submitting " + url + ". The URL will be published after it is reviewed by a human. " + process.env.VCAP_APP_HOST  + "/doc/"+data.id, id: data.id});
+        }
+      });
+    } else {
+      res.status(404).send({ ok: false, msg: "Syntax: /devcenter <url>   e.g. /devcenter http://mysite.com/"});
+    }
+  } else {
+    res.status(403).send({ ok: false, msg: "Invalid authentication"});   
   }
 });
 

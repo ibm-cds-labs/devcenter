@@ -39,15 +39,15 @@ body
                   each j in v.values
                     option(selected= doc[i] == j) #{j}
               else
-                input.form-control(id="#{i}",type="text",name="#{i}",value="#{doc[i]}")
+                input.form-control(id="#{i}",type="text",name="#{i}",value="#{doc[i]?doc[i]:''}")
             if v.type == "number"
-              input.form-control(id="#{i}",type="text",name="#{i}",value="#{doc[i]}")
+              input.form-control(id="#{i}",type="text",name="#{i}",value="#{doc[i]?doc[i]:''}")
             if v.type == "boolean"
               select.form-control(id="#{i}",name="#{i}")
                 each j in ["false","true"]
                   option(selected= doc[i] ==j) #{j}
             if v.type == "arrayofstrings"
-              input.form-control(id="#{i}",type="text",name="#{i}",data-values="#{v.values.join(',')}",data-role="tagsinput",value="#{doc[i].join(',')}")
+              input.form-control(id="#{i}",type="text",name="#{i}",data-values="#{(v.values)?v.values.join(','):''}",data-role="tagsinput",value="#{doc[i]?doc[i].join(','):''}")
               span.help-block #{v.values.join(', ')}
               
       div.form-group#error
