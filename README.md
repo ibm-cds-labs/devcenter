@@ -355,7 +355,7 @@ Full Cloudant Search documentation is [https://docs.cloudant.com/search.html][he
 
 By default, the sort order is 'best match' first. This can be overriden but Cloudant search limits sorting to numeric fields, or string fields that are not 'analyzed'. To this end a `date` field is automatically indexed for your convenience that can be used to sort the result set in date order (`sort="date"`) or reverse date order (`sort="-date"`).
 
-Sorting of boolean fields can be acheived by doing `sort="featured<string"` (false first) or `sort="featured<string"` (true first).
+Sorting of boolean fields can be acheived by doing `sort="featured<string>"` (false first) or `sort="featured<string>"` (true first).
 
 ## Environment variables
 
