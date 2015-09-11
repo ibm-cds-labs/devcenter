@@ -196,14 +196,15 @@ var submitProvisional = function(url, callback) {
     doc.url = url;
     doc._id =  genhash(doc.url);
     spider.url(doc.url, function(err, data) {
-      doc.body="";
-      doc.full_name="";
+      if(!err) {
+        doc.body = data.body;
+        doc.name = doc.full_name = data.full_name;
+        doc.imageurl = data.imageurl;
+        doc.description = data.description;
+      }
       doc.updated_at = now();
       doc.created_at = now();
-      if (!err) {
-        doc.body=data.body;
-        doc.name = doc.full_name= data.full_name
-      }
+      console.log(doc);
       autoMeta(doc, function(err, data) {
         if(!err) {
           doc = data;
@@ -313,11 +314,12 @@ app.post('/api/submit', function(req,res) {
   if(req.body.token && checkToken(req.body.token, process.env.API_KEYS)) {
     var url = req.body.url;
     if (typeof url == "string" && url.length>0) {
+      console.log("/api/submit",url);
       submitProvisional(url, function(err,data) {
         if (err) {
           res.status(404).send({ ok: false, msg: "There was an error :( " + err});
         } else {
-          res.send({ok: true, msg: "Thanks for submitting " + url + ". The URL will be published after it is reviewed by a human. " + process.env.VCAP_APP_HOST  + "/doc/"+data.id, id: data.id});
+          res.send({ok: true, msg: "Thanks for submitting " + url + ". The URL will be published after it is reviewed by a human. Doc id = "+data.id, id: data.id});
         }
       });
     } else {
