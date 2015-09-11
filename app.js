@@ -247,6 +247,9 @@ app.post('/submitdoc', function(req,res) {
         if(typeof item == "boolean") {
           doc[i] = (doc[i] == "true")?true:false;
         }
+        if(typeof item == "number") {
+          doc[i] = parseFloat(doc[i]);
+        }
       }
     
 
