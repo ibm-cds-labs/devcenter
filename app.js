@@ -17,6 +17,7 @@ var app = express();
 
 var cloudant = require('./lib/db.js');
 var db = cloudant.db.use('devcenter');
+var fixedfields = require('./lib/fixedfields.js');
 
 // moment
 var moment = require('moment');
@@ -112,9 +113,9 @@ app.get('/menu', function(req,res) {
 app.get('/doc', function(req,res) {
   if (req.session.loggedin) {
     schema.newDocument(function(err,d) {
-      var fixedfields = require('./lib/fixedfields.js');
+      ff = fixedfields.get();
       schema.load(function(err, s) {
-        res.render("doc", {session:req.session, doc:doc, fixedfields: fixedfields, schema: s});
+        res.render("doc", {session:req.session, doc:d, fixedfields: ff, schema: s});
       });
     });
   } else {
@@ -147,7 +148,7 @@ app.get('/doc/:id', function(req,res) {
   if (req.session.loggedin) {
    
     var id = req.params.id;
-    var fixedfields = require('./lib/fixedfields.js');
+    var ff = fixedfields.get();
     schema.load(function(err, s) {
       db.get(id, function(err, data) {
         if(err) {
@@ -159,7 +160,7 @@ app.get('/doc/:id', function(req,res) {
         data.documentationurl = (data.documentationurl || "");
         data.otherurl = (data.otherurl || "");
         data.namespace = (data.namespace || []);
-        res.render("doc", {session:req.session, doc:data, fixedfields: fixedfields, schema: s});
+        res.render("doc", {session:req.session, doc:data, fixedfields: ff, schema: s});
       });
     });
 
