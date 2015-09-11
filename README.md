@@ -325,7 +325,6 @@ To query the search index, locate the domain name of the Cloudant service that i
 
 ```
 https://9582d32-634c-4ade-83fe-966ea8a8d8c7-bluemix.cloudant.com
-
 ```
 
 The URL of the search API is calculated by adding `/devcenter/_design/search/_search/search` to the end of the Cloudant URL. 
@@ -334,10 +333,10 @@ The following fields are then used for querying:
 
 | field        | Description                         | e.g.                                            |
 | ------------ | ------------------------------------| ----------------------------------------------- |
-| q            | the search query                    | *:*                                             |
-| include_docs | whether to return the document body | true, false                                     |
-| counts       | list of faceted fields to count     | ["level", "namespace"]                           |
-| limit        | the number of results to return     | 10                                              |
+| q            | the search query                    | `*:*`                                           |
+| include_docs | whether to return the document body | `true`                                          |
+| counts       | list of faceted fields to count     | `["level", "namespace"]`                        |
+| limit        | the number of results to return     | `10`                                            |
 
 Some hints:
 
