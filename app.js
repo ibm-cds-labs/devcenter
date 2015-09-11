@@ -244,6 +244,9 @@ app.post('/submitdoc', function(req,res) {
         if (typeof item == "object" && item.type == "arrayofstrings") {
           doc[i] = split(doc[i]);
         }
+        if(typeof item == "boolean") {
+          doc[i] = (doc[i] == "true")?true:false;
+        }
       }
     
 

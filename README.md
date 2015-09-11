@@ -337,16 +337,25 @@ The following fields are then used for querying:
 | include_docs | whether to return the document body | `true`                                          |
 | counts       | list of faceted fields to count     | `["level", "namespace"]`                        |
 | limit        | the number of results to return     | `10`                                            |
+| sort         | override the sort order             | `"-date"`                                       |
 
 Some hints:
 
-* `q=*:*` means 'match everything'
-* fielded queries follow this pattern `q=level:beginner`
-* logic can be performed too `q=level:beginner+AND+namespace:Bluemix`
-* free-text search `q=pouchdb+replication+javascript`
+* `*:*` means 'match everything'
+* fielded queries follow this pattern `level:beginner`
+* logic can be performed too `level:beginner AND namespace:Bluemix`
+* free-text search `q=pouchdb replication javascript`
 * combine free-text and fielded search `q=pouchdb+replication+javascript+AND+namespace:Bluemix`
 * you may only do `counts` on fields that were marked as 'facet:true' in the schema
 * you probably want `include_docs=true`
+
+Full Cloudant Search documentation is [https://docs.cloudant.com/search.html][here].
+
+### Sorting
+
+By default, the sort order is 'best match' first. This can be overriden but Cloudant search limits sorting to numeric fields, or string fields that are not 'analyzed'. To this end a `date` field is automatically indexed for your convenience that can be used to sort the result set in date order (`sort="date"`) or reverse date order (`sort="-date"`).
+
+Sorting of boolean fields can be acheived by doing `sort="featured<string"` (false first) or `sort="featured<string"` (true first).
 
 ## Environment variables
 
