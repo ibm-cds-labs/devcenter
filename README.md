@@ -11,6 +11,21 @@ section, Bluemix contextual search amongst others. It provides the following fun
 * an API that allows a third party system to suggest URLs to be added to the database
 * an API used to allow Slack 'slash command' to be connect to suggest URLs to be added to the database
 
+## Configuration
+
+This a Bluemix app and expects an attached Cloudant NoSQL database service to be attached called "devcenter-cloudant".
+
+You can run this app locally by setting appropriate environment variables to simulate a Bluemix environment e.g
+
+```sh
+export VCAP_SERVICES='{"cloudantNoSQLDB":[{"name":"devcenter-cloudant","label":"cloudantNoSQLDB","plan":"Shared","credentials":{"username":"myusername","password":"mypassword","host":"myhost.cloudant.com","port":443,"url":"https://myusername:mypassword@myhost.cloudant.com"}}]}'
+export PASSWORD=1f2dd4437feca264b4ba93c2b4e71667bcd32e2d
+export SLACK_TOKEN=xPxB8e1031GOh2oJLoofvoEi
+export API_KEYS=7c9fdffca0d003646a9f1fdf591f29a9
+export VCAP_APP_HOST=http://localhost:6007/
+node app.js
+```
+
 ## Data 
 
 In it's simplest form, an item in the database looks like this:
