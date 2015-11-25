@@ -269,13 +269,14 @@ Third-party systems can add articles to the database by POSTING to the `/api/sub
 
 * url - the URL of the article to submit
 * token - the api key used to identify valid API calls
+* namespace - the namespace used to tag the document
 
 where the token must be one of the keys listed in the `API_KEYS` environment variable.
 
 e.g.
 
 ```
-curl -X POST -d 'url=http%3A%2F%2Fmyblog.com%2Fpost%2F1&token=abc123' 'https://mydevcenter.mybluemix.net/api/submit'
+curl -X POST -d 'url=http%3A%2F%2Fmyblog.com%2Fpost%2F1&token=abc123&namespace=Cloud+Data+Services' 'https://mydevcenter.mybluemix.net/api/submit'
 ```
 
 A successful API call will return a JSON message such as:
@@ -295,6 +296,39 @@ If a URL is already in the database, the response will look like:
     "ok": false,
     "msg": "There was an error :( Error: Document update conflict."
 }
+```
+
+It is pretty easy to hook up to the API using a tool like Node-RED. First we create a "sub flow" that expects an input from a Feed Parse node. 
+
+![subflow](https://github.com/ibm-cds-labs/devcenter/raw/master/public/img/subflow.png)
+
+It will:
+
+* converts the Feed Parse output into the form required to HTTP POST 
+* HTTP POST the data to the /api/submit endpoint
+
+The function's source code is as follows:
+
+```js
+var link = msg.article.link;
+var namespace = msg.namespace || "";
+var msg = {};
+msg.headers={"Content-type": "application/x-www-form-urlencoded"};
+msg.payload= "token=03646a9f1fdf7c9fdffca0d0591f29a9";
+msg.payload+= "&url=" + encodeURIComponent(link);
+msg.payload+= "&namespace=" + encodeURIComponent(namespace);
+return msg;
+```
+
+We can the hook up several feeds to this sub-flow:
+
+![rss reader](https://github.com/ibm-cds-labs/devcenter/raw/master/public/img/rss.png)
+
+We hook up each feed to the sub flow, passin the data through functions which add a custom namespace parameter:
+
+```js
+msg.namespace = "Cloud Data Services";
+return msg;
 ```
 
 ## Slack API

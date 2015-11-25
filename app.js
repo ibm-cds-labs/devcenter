@@ -195,7 +195,7 @@ var now = function() {
   return moment().format("YYYY-MM-DD HH:mm:ss Z");
 }
 
-var submitProvisional = function(url, callback) {
+var submitProvisional = function(url, namespace, callback) {
   var u = require('url');
   var parsed = u.parse(url);
   if(!parsed.hostname || !parsed.protocol) {
@@ -206,6 +206,9 @@ var submitProvisional = function(url, callback) {
     delete doc._rev;
     doc.url = url;
     doc._id =  genhash(doc.url);
+    if (namespace) {
+      doc.namespace = namespace.split(",");
+    }
     spider.url(doc.url, function(err, data) {
       if(!err) {
         doc.body = data.body;
@@ -230,7 +233,7 @@ var submitProvisional = function(url, callback) {
 };
 
 app.post('/submitprovisional', function(req,res) {
-  submitProvisional(req.body.url, function(err,data) {
+  submitProvisional(req.body.url, "", function(err,data) {
     res.send({"ok":(err==null), "error": err, "reply": data});
   });
 });
@@ -311,7 +314,7 @@ app.post('/slack', function(req,res) {
   if(req.body.token && checkToken(req.body.token, process.env.SLACK_TOKEN)) {
     var url = req.body.text;
     if (typeof url == "string" && url.length>0) {
-      submitProvisional(url, function(err,data) {
+      submitProvisional(url, "", function(err,data) {
         if (err) {
           res.send("There was an error :( " + err);
         } else {
@@ -328,11 +331,12 @@ app.post('/slack', function(req,res) {
 });
 
 app.post('/api/submit', function(req,res) {
+  console.log("/api/submit",req.body);
   if(req.body.token && checkToken(req.body.token, process.env.API_KEYS)) {
     var url = req.body.url;
     if (typeof url == "string" && url.length>0) {
       console.log("/api/submit",url);
-      submitProvisional(url, function(err,data) {
+      submitProvisional(url, req.body.namespace, function(err,data) {
         if (err) {
           res.status(404).send({ ok: false, msg: "There was an error :( " + err});
         } else {
