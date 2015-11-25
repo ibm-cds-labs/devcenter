@@ -16,7 +16,7 @@ var renderStatus = function(str) {
   html += '<span aria-hidden="true">&times;</span>'
   html += '</button>';
   html += str;
-  html += '<br /><a href="/menu">BACK TO MENU</a>'
+  html += '<br /><a href="menu">BACK TO MENU</a>'
   html += '</div>'
   $('#error').html(html);
 }
@@ -25,7 +25,7 @@ var checkLogin = function() {
   
   var password = $('#password').val();
   var req = {
-    url: "/login",
+    url: "login",
     method: "post",
     data: {
       password:password
@@ -35,7 +35,7 @@ var checkLogin = function() {
   
   $.ajax(req).done(function(msg) {
     if(msg.ok==true) {
-      window.location.href="/menu";
+      window.location.href="menu";
     } else {
       renderError("Invalid password");
     }
@@ -53,7 +53,7 @@ var submitProvisional = function() {
   var doc = $('#provisional').serialize();
   console.log(doc);
   var req = {
-    url: "/submitprovisional",
+    url: "submitprovisional",
     method: "post",
     data: $('#provisional').serialize(),
     dataType: "json"
@@ -77,7 +77,7 @@ var submitDoc = function() {
   var doc = $('#doc').serialize();
   console.log(doc);
   var req = {
-    url: "/submitdoc",
+    url: "submitdoc",
     method: "post",
     data: $('#doc').serialize(),
     dataType: "json"
@@ -105,7 +105,7 @@ var submitSchema= function() {
     var parseval = JSON.parse(val);
     $('#schemasubmitbtn').prop('disabled', true);
     var req = {
-      url: "/schema",
+      url: "schema",
       method: "post",
       data: {schema :JSON.stringify(parseval) }
     };

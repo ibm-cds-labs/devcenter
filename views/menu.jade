@@ -19,11 +19,11 @@ body
     
     h2 Create new document (all fields)
     div
-      a.btn.btn-default(href="/doc") Create New Document
+      a.btn.btn-default(href="doc") Create New Document
     
     h2 Schema
     div
-      a.btn.btn-default(href="/schema") Edit Schema
+      a.btn.btn-default(href="schema") Edit Schema
       
     h2 Provisional documents
     ul
@@ -33,7 +33,7 @@ body
           - var d = docs.rows[i];
           - if (docs.rows[i].key == "Provisional") { 
             li
-              a(href="/doc/#{d.id}") 
+              a(href="doc?id=#{d.id}") 
                 b #{d.value.name}
               br 
               span(class="muted") #{d.value.url}
@@ -48,7 +48,7 @@ body
           - var d = docs.rows[i];
           - if (docs.rows[i].key == "Live") { 
             li
-              a(href="/doc/#{d.id}") #{d.value.name}
+              a(href="doc?id=#{d.id}") #{d.value.name}
              - }
           - }      
         - }
@@ -61,7 +61,7 @@ body
           - var d = docs.rows[i];
           - if (d.key == "Deleted") { 
             li
-              a(href="/doc/#{d.id}") #{d.value.name}
+              a(href="doc?id=#{d.id}") #{d.value.name}
             - }
           - }   
         - }   

@@ -84,11 +84,18 @@ var genhash = function(str) {
 
 app.get('/', function(req,res) {
   if(req.session.loggedin) {
-    res.redirect("/menu");
+    res.redirect("menu");
   } else {
     res.render('home', { });
   }
+});
 
+app.get('/index', function(req,res) {
+  if(req.session.loggedin) {
+    res.redirect("menu");
+  } else {
+    res.render('home', { });
+  }
 });
 
 app.post('/login', function(req,res) {
@@ -116,12 +123,35 @@ app.get('/menu', function(req,res) {
 
 app.get('/doc', function(req,res) {
   if (req.session.loggedin) {
-    schema.newDocument(function(err,d) {
-      ff = fixedfields.get();
+    var id = req.query.id;
+    if (id) {
+      var ff = fixedfields.get();
       schema.load(function(err, s) {
-        res.render("doc", {session:req.session, doc:d, fixedfields: ff, schema: s});
+        db.get(id, function(err, data) {
+          if(err) {
+            return res.status(404);
+          }
+          data.githuburl = (data.githuburl || "");
+          data.videourl = (data.videourl || "");
+          data.demourl = (data.demourl || "");
+          data.documentationurl = (data.documentationurl || "");
+          data.otherurl = (data.otherurl || "");
+          data.namespace = (data.namespace || []);
+          res.render("doc", {session:req.session, doc:data, fixedfields: ff, schema: s});
+        });
       });
-    });
+    } else {
+      schema.newDocument(function(err,d) {
+        ff = fixedfields.get();
+
+      
+        schema.load(function(err, s) {
+          res.render("doc", {session:req.session, doc:d, fixedfields: ff, schema: s});
+        });
+      });
+    }
+    
+
   } else {
     res.redirect("/");
   }
@@ -148,31 +178,7 @@ app.post('/schema', function(req, res) {
   });
 });
 
-app.get('/doc/:id', function(req,res) {
-  if (req.session.loggedin) {
-   
-    var id = req.params.id;
-    var ff = fixedfields.get();
-    schema.load(function(err, s) {
-      db.get(id, function(err, data) {
-        if(err) {
-          return res.status(404);
-        }
-        data.githuburl = (data.githuburl || "");
-        data.videourl = (data.videourl || "");
-        data.demourl = (data.demourl || "");
-        data.documentationurl = (data.documentationurl || "");
-        data.otherurl = (data.otherurl || "");
-        data.namespace = (data.namespace || []);
-        res.render("doc", {session:req.session, doc:data, fixedfields: ff, schema: s});
-      });
-    });
 
-    
-  } else {
-    res.redirect("/");
-  }
-});
 
 var split = function(str) {
   if(!str || str.length==0) {
@@ -310,7 +316,7 @@ app.post('/slack', function(req,res) {
           res.send("There was an error :( " + err);
         } else {
           res.send("Thanks for submitting " + url + ". The URL will be published after it is reviewed by a human. " + 
-                     process.env.VCAP_APP_HOST  + "/doc/"+data.id);
+                     process.env.VCAP_APP_HOST  + "/doc?id="+data.id);
         }
       });
     } else {
@@ -334,7 +340,7 @@ app.post('/api/submit', function(req,res) {
         }
       });
     } else {
-      res.status(404).send({ ok: false, msg: "Syntax: /devcenter <url>   e.g. /devcenter http://mysite.com/"});
+      res.status(404).send({ ok: false, msg: "no url found in POST body"});
     }
   } else {
     res.status(403).send({ ok: false, msg: "Invalid authentication"});   
