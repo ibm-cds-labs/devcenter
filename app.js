@@ -25,15 +25,15 @@ var moment = require('moment');
 // spider 
 var spider = require('./lib/spider.js');
 
-// body parsing
-var bodyParser = require('body-parser');
-app.use(bodyParser.urlencoded({ extended: false }));
-
 // sessions please
 var session = require('express-session');
 app.use(session({
-  secret: 'devcenter'
+  secret: 'devcenter', cookie: { }
 }));
+
+// body parsing
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
 
 var schema = require('./lib/schema.js');
 
@@ -83,19 +83,11 @@ var genhash = function(str) {
 
 
 app.get('/', function(req,res) {
-  if(req.session.loggedin) {
-    res.redirect("menu");
-  } else {
-    res.render('home', { });
-  }
+  res.redirect("menu");
 });
 
 app.get('/index', function(req,res) {
-  if(req.session.loggedin) {
-    res.redirect("menu");
-  } else {
-    res.render('home', { });
-  }
+  res.redirect("menu");
 });
 
 app.post('/login', function(req,res) {
@@ -112,12 +104,13 @@ app.post('/login', function(req,res) {
 });
 
 app.get('/menu', function(req,res) {
+  console.log('/menu',req.session.id);
   if (req.session.loggedin) {
     db.view("search","bystatus", { reduce: false}, function(err,data) {
-      res.render("menu", {session:req.session, docs: data});
+      res.render("menu", {docs: data});
     });
   } else {
-    res.redirect("/");
+    res.render('home', { });
   }
 });
 
@@ -153,7 +146,7 @@ app.get('/doc', function(req,res) {
     
 
   } else {
-    res.redirect("/");
+    res.redirect("index");
   }
 });
 
@@ -163,7 +156,7 @@ app.get('/schema', function(req, res) {
       res.render("schema", {session:req.session, schema: s});
     });
   } else {
-    res.redirect("/");
+    res.redirect("index");
   }
 });
 
@@ -292,13 +285,13 @@ app.post('/submitdoc', function(req,res) {
     
   
   } else {
-    res.redirect("/");
+    res.redirect("index");
   }
 });
 
 app.get('/logout', function(req,res) {
   req.session.loggedin=false;
-  res.redirect("/");
+  res.redirect("index");
 });
 
 var checkToken = function(token, tokenlist) {
