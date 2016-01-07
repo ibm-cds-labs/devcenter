@@ -23,3 +23,11 @@ body
         button.btn.btn-default(type="submit") Submit
 
 
+  script(type="text/javascript").
+    $( document ).ready(function() {
+      // jump to a url ending in a slash e.g. /api/v1/content/ not /api/v1/content
+      if(!window.location.href.match(/\/$/)) {
+        window.location.href=window.location.href+"/";
+      }
+
+    });

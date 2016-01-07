@@ -35,7 +35,7 @@ var checkLogin = function() {
   
   $.ajax(req).done(function(msg) {
     if(msg.ok==true) {
-      window.location.href="menu";
+      window.location.href=".";
     } else {
       renderError("Invalid password");
     }

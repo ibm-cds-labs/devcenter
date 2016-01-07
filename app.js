@@ -83,11 +83,17 @@ var genhash = function(str) {
 
 
 app.get('/', function(req,res) {
-  res.redirect("menu");
+  if (req.session.loggedin) {
+    db.view("search","bystatus", { reduce: false}, function(err,data) {
+      res.render("menu", {docs: data, session:req.session});
+    });
+  } else {
+    res.render('home', { });
+  }
 });
 
 app.get('/index', function(req,res) {
-  res.redirect("menu");
+  res.redirect("");
 });
 
 app.post('/login', function(req,res) {
@@ -104,14 +110,7 @@ app.post('/login', function(req,res) {
 });
 
 app.get('/menu', function(req,res) {
-  console.log('/menu',req.session.id);
-  if (req.session.loggedin) {
-    db.view("search","bystatus", { reduce: false}, function(err,data) {
-      res.render("menu", {docs: data});
-    });
-  } else {
-    res.render('home', { });
-  }
+  res.redirect("");
 });
 
 app.get('/doc', function(req,res) {
@@ -291,7 +290,7 @@ app.post('/submitdoc', function(req,res) {
 
 app.get('/logout', function(req,res) {
   req.session.loggedin=false;
-  res.redirect("index");
+  res.redirect(".");
 });
 
 var checkToken = function(token, tokenlist) {
