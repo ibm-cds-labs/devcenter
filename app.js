@@ -91,11 +91,11 @@ app.get('/index', function(req,res) {
 });
 
 app.post('/login', function(req,res) {
-  var crypto = require('crypto');
-  var shasum = crypto.createHash('sha1');
-  shasum.update(req.body.password);
-  var hash = shasum.digest('hex');
-  if(hash == process.env.PASSWORD) {
+//  var crypto = require('crypto');
+//  var shasum = crypto.createHash('sha1');
+//  shasum.update(req.body.password);
+//  var hash = shasum.digest('hex');
+  if(req.body.password == process.env.PASSWORD) {
     req.session.loggedin=true;
     res.send({"ok":true});
   } else {
