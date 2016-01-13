@@ -16,7 +16,7 @@ var renderStatus = function(str) {
   html += '<span aria-hidden="true">&times;</span>'
   html += '</button>';
   html += str;
-  html += '<br /><a href="menu">BACK TO MENU</a>'
+  html += '<br /><a href=".">BACK TO MENU</a>'
   html += '</div>'
   $('#error').html(html);
 }
