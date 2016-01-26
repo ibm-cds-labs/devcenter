@@ -51,7 +51,9 @@ body
                 each j in ["false","true"]
                   option(selected= doc[i] ==j) #{j}
             if v.type == "arrayofstrings"
-              input.form-control(id="#{i}",type="text",name="#{i}",data-values="#{(v.values)?v.values.join(','):''}",data-role="tagsinput",value="#{doc[i]?doc[i].join(','):''}")
+              - var str = (typeof doc[i] == 'object')?doc[i].join(','):doc[i];
+              - if (str == undefined) { str = "" };
+              input.form-control(id="#{i}",type="text",name="#{i}",data-values="#{(v.values)?v.values.join(','):''}",data-role="tagsinput",value="#{str}")
               span.help-block #{v.values.join(', ')}
               
       div.form-group#error
