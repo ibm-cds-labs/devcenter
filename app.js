@@ -93,7 +93,7 @@ app.get('/', function(req,res) {
 });
 
 app.get('/index', function(req,res) {
-  res.redirect("");
+  res.redirect(".");
 });
 
 app.post('/login', function(req,res) {
@@ -110,7 +110,7 @@ app.post('/login', function(req,res) {
 });
 
 app.get('/menu', function(req,res) {
-  res.redirect("");
+  res.redirect(".");
 });
 
 app.get('/doc', function(req,res) {
