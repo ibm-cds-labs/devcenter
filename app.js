@@ -37,13 +37,16 @@ if (typeof VCS && VCS['DataCache-1.0']) {
   console.log("Using IBMDatacache as a session store");
   var IBMDataCacheStore = require('connect-ibmdatacache')(session);
   app.use(session({
+    key: 'JSESSIONID',
     store: new IBMDataCacheStore(),
     secret: 'devcenter'
   }));
 } else {
   console.log("Using express-session as a session store");
   app.use(session({
-    secret: 'devcenter', cookie: { }
+    key: 'JSESSIONID',
+    secret: 'devcenter', 
+    cookie: { }
   }));
 }
 
