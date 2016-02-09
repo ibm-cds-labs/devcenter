@@ -27,9 +27,26 @@ var spider = require('./lib/spider.js');
 
 // sessions please
 var session = require('express-session');
-app.use(session({
-  secret: 'devcenter', cookie: { }
-}));
+
+// see if we have IBM Datacache installed
+var VCS = process.env.VCAP_SERVICES;
+if (VCS) {
+  VCS = JSON.parse(VCS);
+}
+if (typeof VCS && VCS['DataCache-1.0']) {
+  console.log("Using IBMDatacache as a session store");
+  var IBMDataCacheStore = require('connect-ibmdatacache')(session);
+  app.use(session({
+    store: new IBMDataCacheStore(),
+    secret: 'devcenter'
+  }));
+} else {
+  console.log("Using express-session as a session store");
+  app.use(session({
+    secret: 'devcenter', cookie: { }
+  }));
+}
+
 
 // body parsing
 var bodyParser = require('body-parser');

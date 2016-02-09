@@ -1,6 +1,6 @@
 {
   "name": "devcenter",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Article uploader for Dev Center",
   "scripts": {
     "start": "node app.js"
@@ -10,6 +10,7 @@
     "body-parser": "^1.14.2",
     "cfenv": "1.0.3",
     "cloudant": "1.4.1",
+    "connect-ibmdatacache": "0.0.2",
     "debug": "2.2.0",
     "express": "4.13.4",
     "express-session": "1.13.0",
