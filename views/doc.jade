@@ -54,7 +54,9 @@ body
               - var str = (typeof doc[i] == 'object')?doc[i].join(','):doc[i];
               - if (str == undefined) { str = "" };
               input.form-control(id="#{i}",type="text",name="#{i}",data-values="#{(v.values)?v.values.join(','):''}",data-role="tagsinput",value="#{str}")
-              span.help-block #{v.values.join(', ')}
+              - var helptext = "";
+              - if (v.values != undefined) { helptext = v.values.join(', ') };
+              span.help-block #{helptext}
               
       div.form-group#error
 
