@@ -42,8 +42,11 @@
 }
 
 .input_text.disabled,
-.input_text[disabled] {
-  background-color: #d3d9dd;
+.input_text[disabled],
+.input_text[readonly] {
+  /*background-color: #d3d9dd;*/
+  color: #777777;
+  font-style: italic;
 }
 
 li.active {
