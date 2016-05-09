@@ -77,6 +77,47 @@ li.active {
 
 .input_text,
 .input_select,
+.ms-options-wrap > button:focus,
+.ms-options-wrap > button,
+.ms-options-wrap > .ms-options,
 .bootstrap-tagsinput {
   max-width: 60%;
+}
+
+.ms-options-wrap > button {
+  border: 1px solid #d3d9dd;
+  color: #000000;
+  min-height: 32px;
+  white-space: normal;
+}
+
+.ms-options-wrap > button:focus {
+  border: 1px solid #0699cc;
+  color: #000000;
+}
+
+.ms-options-wrap > button:after {
+  border: none;
+  color: #ffffff;
+  content: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14.7px' height='8.7px'%3E%3Cpolygon fill='%23000000' points='7.3,8.7 0,1.4 1.4,0 7.3,5.9 13.2,0 14.7,1.4 '/%3E%3C/svg%3E");
+  margin-top: -7px;
+  right: 25px;
+}
+
+.ms-options {
+  min-height: initial !important;
+}
+
+.ms-options > ul {
+  color: #264a60;
+  font-size: 0.9em;
+}
+
+.ms-options-wrap > .ms-options > ul li.selected label {
+  background-color: #ffffff;
+}
+
+.ms-options-wrap > .ms-options > .ms-selectall.global {
+  color: #006d5d;
+  text-transform: initial;
 }

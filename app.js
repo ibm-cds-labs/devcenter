@@ -210,7 +210,7 @@ var split = function(str) {
   if(!str || str.length==0) {
     return [];
   }
-  var s = str.split(",");
+  var s = (typeof str === "string") ? str.split(",") : str;
   for(var i in s) {
     s[i] = s[i].replace(/^ +/,"").replace(/ +$/,"");
   }
