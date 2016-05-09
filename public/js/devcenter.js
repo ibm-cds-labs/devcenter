@@ -1,24 +1,17 @@
-var renderError = function(str) {
+var renderMessage = function(msg, containerId) {
+  var id = containerId || "error";
+  var str = msg;
   
-  var html = '<div class="alert alert-danger" role="alert">';  
-  html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
-  html += '<span aria-hidden="true">&times;</span>'
-  html += '</button>';
-  html += str;
-  html += '</div>'
-  $('#error').html(html);
-}
-
-var renderStatus = function(str) {
+  if (typeof msg == "object") {
+    str = msg.message || JSON.stringify(msg);
+  }
   
-  var html = '<div class="alert alert-warning" role="alert">';  
-  html += '<button type="button" class="close" data-dismiss="alert" aria-label="Close">';
-  html += '<span aria-hidden="true">&times;</span>'
-  html += '</button>';
-  html += str;
-  html += '<br /><a href=".">BACK TO MENU</a>'
-  html += '</div>'
-  $('#error').html(html);
+  var html = '<div class="alert-container warning" role="alert">';
+  html += '<p>' + str + '</p>';
+  html += '<div class="dialog_dismiss"><button class="button_primary" onclick="document.getElementById(\'' + id + '\').innerHTML=\'\';">Dismiss</button></div>';
+  html += '</div>';
+  
+  $('#' + id).html(html);
 }
 
 var checkLogin = function() {
@@ -32,17 +25,19 @@ var checkLogin = function() {
     },
     dataType: "json"
   };
-  
+  $('#loginbtn').prop('disabled', true);
   $.ajax(req).done(function(msg) {
     if(msg.ok==true) {
       window.location.href=".";
     } else {
-      renderError("Invalid password");
+      renderMessage("Invalid password");
     }
+    $('#loginbtn').prop('disabled', false);
     
 
   }).fail(function(msg) {
-    renderError("Something went wrong");
+    renderMessage("Something went wrong");
+    $('#loginbtn').prop('disabled', false);
   });
   
   return false;
@@ -58,14 +53,17 @@ var submitProvisional = function() {
     data: $('#provisional').serialize(),
     dataType: "json"
   };
+  $('#provsubmitbtn').prop('disabled', true);
   $.ajax(req).done(function(msg) {
     if(msg.ok==true) {
-      renderStatus(JSON.stringify(msg))
+      renderMessage("Success");
     } else {
-      renderError(msg.error);
+      renderMessage(msg.error);
     }
+    $('#provsubmitbtn').prop('disabled', false);
   }).fail(function(msg) {
-    renderError("Something went wrong");
+    renderMessage("Something went wrong");
+    $('#provsubmitbtn').prop('disabled', false);
   });
 
   return false;
@@ -82,14 +80,17 @@ var submitDoc = function() {
     data: $('#doc').serialize(),
     dataType: "json"
   };
+  $('#submitdocbtn').prop('disabled', true);
   $.ajax(req).done(function(msg) {
     if(msg.ok==true) {
-      renderStatus(JSON.stringify(msg))
+      renderMessage("Success", "submiterror");
     } else {
-      renderError(msg.error);
+      renderMessage(msg.error, "submiterror");
     }
+    $('#submitdocbtn').prop('disabled', false);
   }).fail(function(msg) {
-    renderError("Something went wrong");
+    renderMessage("Something went wrong", "submiterror");
+    $('#submitdocbtn').prop('disabled', false);
   });
 
   return false;
@@ -112,16 +113,30 @@ var submitSchema= function() {
     $.ajax(req).done(function(msg) {
       console.log(msg);
       if(msg.ok==true) {
-        renderStatus(JSON.stringify(msg))
+        renderMessage("Success");
       } else {
-        renderError(msg.error);
+        renderMessage(msg.error);
       }
+      $('#schemasubmitbtn').prop('disabled', false);
     }).fail(function(msg) {
-      renderError("Something went wrong");
+      renderMessage("Something went wrong");
+      $('#schemasubmitbtn').prop('disabled', false);
     });
-    
-  } catch(e) {
-    renderError("Invalid JSON")
+  }
+  catch(e) {
+    renderMessage("Invalid JSON");
+      $('#schemasubmitbtn').prop('disabled', false);
   }
   return false;
 }
+
+var updateNav = function(activeDom) {
+  $("li.active").removeClass("active");
+  if (activeDom) {
+    $(activeDom).parentNode.addClass("active");
+  }
+}
+
+$(function() {
+  $( ".tabbed-panel" ).tabs();
+});

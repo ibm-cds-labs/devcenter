@@ -149,7 +149,7 @@ app.get('/doc', function(req,res) {
           data.documentationurl = (data.documentationurl || "");
           data.otherurl = (data.otherurl || "");
           data.namespace = (data.namespace || []);
-          res.render("doc", {session:req.session, doc:data, fixedfields: ff, schema: s});
+          res.render("docedit", {session:req.session, doc:data, fixedfields: ff, schema: s, page: "edit"});
         });
       });
     } else {
@@ -158,7 +158,7 @@ app.get('/doc', function(req,res) {
 
       
         schema.load(function(err, s) {
-          res.render("doc", {session:req.session, doc:d, fixedfields: ff, schema: s});
+          res.render("docadd", {session:req.session, doc:d, fixedfields: ff, schema: s, page: "add"});
         });
       });
     }
@@ -172,7 +172,7 @@ app.get('/doc', function(req,res) {
 app.get('/schema', function(req, res) {
   if (req.session.loggedin) {
     schema.load(function(err, s) {
-      res.render("schema", {session:req.session, schema: s});
+      res.render("schema", {session:req.session, schema: s, page: "schema"});
     });
   } else {
     res.redirect("index");
@@ -188,6 +188,20 @@ app.post('/schema', function(req, res) {
   schema.saveAndGenerate(parsed, function(err, data) {
     res.send(data);
   });
+});
+
+
+
+app.get('/view', function(req,res) {
+  if (req.session.loggedin) {    
+    var status = req.query.status;
+    db.view("search", "bystatus", { reduce: false}, function(err,data) {
+      res.render("docview", {docs: data, session: req.session, key: status, page: status});
+    });
+  }
+  else {
+    res.redirect('index');
+  }
 });
 
 
