@@ -8,6 +8,7 @@ form(id="doc",onsubmit="return submitDoc();")
           select.input_select(id="status",name="status")
             each j in ["Provisional","Live","Deleted"]
               option(selected= doc[i] == j) #{j}
+          input(id="_status",name="_status",type="hidden",value="#{doc[i]}") 
         else if i == "_id" || i == "_rev"
           input(type="hidden",id="#{i}",name="#{i}",value="#{doc[i]}")
         else if i == "url" && doc["_rev"].length > 0

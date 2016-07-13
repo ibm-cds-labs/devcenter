@@ -290,7 +290,13 @@ app.post('/submitdoc', function(req,res) {
           doc[i] = parseFloat(doc[i]);
         }
       }
-    
+
+      // if this doc has moved from Provisional to Live
+      // mark its updated_at date to now
+      if (doc._status === 'Provisional' && doc.status === 'Live') {
+        doc.updated_at = now();
+      }
+      delete doc._status;
 
       if(!doc.created_at || doc.created_at.length==0) {
         doc.created_at = now();
