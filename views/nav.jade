@@ -11,6 +11,8 @@ ul.tree-nav
       a.tree-nav_link(href="/view?status=live") Live
     li.tree-nav_item(class=page == "deleted" ? "active" : "")
       a.tree-nav_link(href="/view?status=deleted") Deleted
+    li.tree-nav_item(class=page == "search" ? "active" : "")
+      a.tree-nav_link(href="/search") Search
     //-li.tree-nav_item(class=page == "schema" ? "active" : "")
     //-  a.tree-nav_link(href="/schema") Schema
    else
@@ -22,6 +24,8 @@ ul.tree-nav
       a.tree-nav_link.disabled Live
     li.tree-nav_item
       a.tree-nav_link.disabled Deleted
+    li.tree-nav_item
+      a.tree-nav_link.disabled Search
     //-li.tree-nav_item
     //-  a.tree-nav_link.disabled Schema
   if session && session.loggedin

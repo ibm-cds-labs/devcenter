@@ -28,7 +28,6 @@ form(id="doc",onsubmit="return submitDoc();")
           label.form_label(for="#{i}") #{i}
           if v.type == "string" 
             if typeof v.enforceValues == "boolean" && v.enforceValues && v.values
-              - v.values.sort(function(a,b){return a.toLowerCase()<b.toLowerCase() ? -1 : a.toLowerCase()>b.toLowerCase() ? 1 : 0;});
               select.input_select(id="#{i}",name="#{i}")
                 each j in v.values
                   option(selected= doc[i] == j) #{j}
@@ -44,7 +43,6 @@ form(id="doc",onsubmit="return submitDoc();")
             - var str = (typeof doc[i] == 'object')?doc[i].join(','):doc[i];
             - if (str == undefined) { str = "" };
             - if (v.values != undefined) {
-            - v.values.sort(function(a,b){return a.toLowerCase()<b.toLowerCase() ? -1 : a.toLowerCase()>b.toLowerCase() ? 1 : 0;});
             - var selectedOpts = str.split(",");
             select(id="#{i}",name="#{i}",class="input_select",multiple="multiple")
               each o in v.values
