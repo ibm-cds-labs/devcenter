@@ -288,7 +288,7 @@ var performSearch = function(options, callback) {
           return {
             id: row.doc._id,
             status: row.doc.status,
-            date: row.doc.created_at,
+            date: (row.doc.updated_at || row.doc.created_at),
             name: row.doc.name,
             url: row.doc.url
           };
