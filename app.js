@@ -276,7 +276,7 @@ var performSearch = function(options, callback) {
     var opts = options && options.q ? options : { q: '*:*' };
     opts.include_docs = true;
     opts.limit = 20;
-    opts.sort = 'created_at';
+    opts.sort = '-date';
 
     db.search('search', 'search', opts, function(err, data) {
       var d = data;
