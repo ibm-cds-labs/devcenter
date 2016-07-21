@@ -69,5 +69,7 @@ form(id="doc",onsubmit="return submitDoc();")
             }
           });
           
-          $("#level").prop("selectedIndex", -1);
+          if ($("#level option[selected]").length == 0) {
+            $("#level").prop("selectedIndex", -1);
+          }
         });
