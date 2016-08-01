@@ -1,0 +1,30 @@
+- if (docs && docs.rows) {
+  - if (err) {
+    tr.errrow
+      td(colspan="4")
+        div.alert-container.warning(role="alert") #{err}
+  - }
+  each d, index in docs.rows
+   - if (index == docs.rows.length - 1) {
+    tr.docrow(data-bookmark="#{docs.bookmark}",data-total-rows="#{docs.total_rows}")
+      td #{d.status}
+      td #{d.date}
+      td
+        a.type_link(href="doc?id=#{d.id}") #{d.name}
+      td
+        - if (d.status && d.status.toLowerCase() == "provisional") {
+          span.muted #{d.url}
+        - }
+   - }
+   - else {
+    tr.docrow
+      td #{d.status}
+      td #{d.date}
+      td
+        a.type_link(href="doc?id=#{d.id}") #{d.name}
+      td
+        - if (d.status && d.status.toLowerCase() == "provisional") {
+          span.muted #{d.url}
+        - }
+   - }
+- }

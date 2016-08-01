@@ -85,6 +85,81 @@ li.active {
   max-width: 60%;
 }
 
+.input_text-wide {
+  max-width: 100%;
+}
+.input_text-clear {
+  color: #323232;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1.35rem;
+  height: 2rem;
+  padding: 0 1rem;
+  position: absolute;
+  right: 100px;
+  white-space: nowrap;
+  visibility: hidden;
+}
+
+.search_button {
+  height: 2rem;
+}
+
+.searchfacet {
+  margin-bottom: 1rem;
+}
+
+.searchfacet .type_subhead {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}
+
+.searchfacet .type_subhead:hover {
+  cursor: pointer;
+}
+
+.searchfacet:hover .type_subhead {
+  color: #ececec;
+}
+
+.searchfacet .tag-list {
+  margin-top: 0.5rem;
+  overflow: auto;
+}
+
+.searchfacet .tag-list_tag {
+  padding-left: 15px;
+}
+
+.searchfacet .tag-list_tag a {
+  text-decoration: none;
+}
+
+.searchfacet .tag-list_tag a:hover {
+  text-decoration: underline;
+}
+
+.searchfacet .tag-list_tag a::before {
+  color: #41d6c3;
+  content: "\02713";
+  display: inline-block;
+  padding-right: 5px;
+  text-decoration: none;
+  visibility: hidden;
+}
+
+.searchfacet .tag-list_tag a.active::before {
+  visibility: visible;
+}
+
+.searchfacet .tag-list_tag a.active {
+  font-weight: bold;
+}
+
+.table_container {
+  margin-bottom: 2.25rem;
+}
+
 .ms-options-wrap > button {
   border: 1px solid #d3d9dd;
   color: #000000;

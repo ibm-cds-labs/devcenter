@@ -149,7 +149,7 @@ app.get('/doc', function(req,res) {
           data.documentationurl = (data.documentationurl || "");
           data.otherurl = (data.otherurl || "");
           data.namespace = (data.namespace || []);
-          res.render("docedit", {session:req.session, doc:data, fixedfields: ff, schema: s, page: "edit"});
+          res.render("docedit", {session:req.session, doc:data, fixedfields: ff, schema: sortArrayOfStrings(s), page: "edit"});
         });
       });
     } else {
@@ -158,7 +158,7 @@ app.get('/doc', function(req,res) {
 
       
         schema.load(function(err, s) {
-          res.render("docadd", {session:req.session, doc:d, fixedfields: ff, schema: s, page: "add"});
+          res.render("docadd", {session:req.session, doc:d, fixedfields: ff, schema: sortArrayOfStrings(s), page: "add"});
         });
       });
     }
@@ -190,7 +190,38 @@ app.post('/schema', function(req, res) {
   });
 });
 
+app.get('/search', function(req,res) {
+  if (req.session.loggedin) {
+    schema.load(function(err, s) {
+      s = sortArrayOfStrings(s, true);
+      s.status = {
+        type: 'arrayofstrings',
+        enforceValues: true,
+        values: ['Provisional', 'Live', 'Deleted']
+      };
+      s['_arrayofstrings'].unshift('status');
+      res.render('docsearch', {session: req.session, page: 'search', schema: s});
+    });
+  }
+  else {
+    res.redirect('index');
+  }
+});
 
+app.get('/searchdoc', function(req,res) {
+  if (req.session.loggedin) {
+    var opts = req.query && req.query.q ? req.query : { q: '*:*' };
+
+    var done = function(err, data) {
+      res.render('tablerows', {docs: data, err: err, session: req.session});
+    }
+    
+    performSearch(opts, done);
+  }
+  else {
+    res.redirect('index');
+  }
+});
 
 app.get('/view', function(req,res) {
   if (req.session.loggedin) {    
@@ -219,6 +250,55 @@ var split = function(str) {
 
 var now = function() {
   return moment().format("YYYY-MM-DD HH:mm:ss Z");
+}
+
+var sortArrayOfStrings = function(schema, listArrayOfStrings) {
+  var s = schema;
+  var fields = [];
+  for (var f in s) {
+    if (s[f].type === 'arrayofstrings' && s[f].enforceValues == true && s[f].values) {
+      fields.push(f);
+      s[f].values.sort(function(a, b) {
+        return a.toLowerCase()<b.toLowerCase() ? -1 : a.toLowerCase()>b.toLowerCase() ? 1 : 0;
+      });
+    }
+  }
+  if (listArrayOfStrings) {
+    fields.sort(function(a, b) {
+      return a.toLowerCase()<b.toLowerCase() ? -1 : a.toLowerCase()>b.toLowerCase() ? 1 : 0;
+    });
+    s["_arrayofstrings"] = fields;
+  }
+  return s;
+}
+
+var performSearch = function(options, callback) {
+    var opts = options && options.q ? options : { q: '*:*' };
+    opts.include_docs = true;
+    opts.limit = 20;
+    opts.sort = '-date';
+
+    db.search('search', 'search', opts, function(err, data) {
+      var d = data;
+      if (err || !data.rows || data.rows.length == 0) {
+        d = { rows: [] };
+      }
+      else {
+        data.rows = data.rows.map(function(row) {
+          return {
+            id: row.doc._id,
+            status: row.doc.status,
+            date: (row.doc.updated_at || row.doc.created_at),
+            name: row.doc.name,
+            url: row.doc.url
+          };
+        });
+        d = data;
+      }
+      if (callback) {
+        callback(err, d);
+      }
+    });
 }
 
 var submitProvisional = function(url, namespace, callback) {
