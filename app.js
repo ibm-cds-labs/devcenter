@@ -278,7 +278,7 @@ var performSearch = function(options, callback) {
     opts.limit = 20;
     opts.sort = '-date';
 
-    db.search('search', 'search', opts, function(err, data) {
+    db.search('search', 'searchdocs', opts, function(err, data) {
       var d = data;
       if (err || !data.rows || data.rows.length == 0) {
         d = { rows: [] };
