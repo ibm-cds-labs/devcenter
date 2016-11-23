@@ -116,7 +116,7 @@ var deleteDocs = function(docIds) {
   };
   $.ajax(req)
     .always(function() {
-      $('#deletebutton').text('Delete')
+      $('#deletebutton').text('Mark Deleted')
       $('#deletebutton').prop('disabled', false)
       $('#searchbutton').click()
     })
