@@ -94,7 +94,34 @@ var submitDoc = function() {
   });
 
   return false;
-  
+}
+
+var deleteDocs = function(docIds) {
+   $('#deletebutton').prop('disabled', true);
+   $('#deletebutton').text('Updating...')
+  var ids = []
+  if (docIds) {
+    ids = docIds
+  } else {
+    $('.select_checkbox:checked')
+      .each(function() {
+        ids.push(this.id)
+      })
+  }
+  var req = {
+    url: "markdeleted",
+    method: "post",
+    data: {"ids": JSON.stringify(ids)},
+    dataType: "json"
+  };
+  $.ajax(req)
+    .always(function() {
+      $('#deletebutton').text('Delete')
+      $('#deletebutton').prop('disabled', false)
+      $('#searchbutton').click()
+    })
+
+  return false;
 }
 
 

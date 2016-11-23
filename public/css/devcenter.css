@@ -101,6 +101,12 @@ li.active {
   visibility: hidden;
 }
 
+#deletebutton {
+  position: absolute;
+  right: 0;
+  top: 25px;
+}
+
 .search_button {
   height: 2rem;
 }
