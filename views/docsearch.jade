@@ -37,10 +37,12 @@ body.capped-layout
           div.grid_column.six
             h3.type_subhead.type_mark Documents
             p.type_copy.search_count
+            button#deletebutton.button_primary Mark Deleted
             div.table_container
               table.table_basic
                 thead
                   tr
+                    th &nbsp;
                     th Status
                     th Date
                     th Name
@@ -50,8 +52,8 @@ body.capped-layout
     
       script(type="text/javascript").
           $(document).ready(function() {
-            $('div.searchfacet > h4.type_subhead').hover(
-              function() {
+            $('div.searchfacet > h4.type_subhead')
+              .hover(function() {
                 if (!$(this).hasClass('active')) {
                   $('div.searchfacet > h4.type_subhead.active')
                     .removeClass('active')
@@ -64,6 +66,9 @@ body.capped-layout
               });
             $('#morebutton').click(function() {
               searchDocs(null, $(this).data('bookmark'));
+            });
+            $('#deletebutton').click(function() {
+              deleteDocs();
             });
             $('#searchinput').val('');
             searchDocs('');

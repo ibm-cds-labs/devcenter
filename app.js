@@ -344,6 +344,29 @@ app.post('/submitprovisional', function(req,res) {
   });
 });
 
+app.post('/markdeleted', function(req, res) {
+  var ids = JSON.parse(req.body.ids)
+  if (ids && ids.length > 0) {
+    db.fetch({keys: ids, reduce: false}, function(err, data) {
+      if (!err && data.rows.length > 0) {
+        var docs = data.rows.map(function(row) {
+          var doc = row.doc
+          doc.status = 'Deleted'
+          return doc 
+        })
+        db.bulk({docs: docs}, function(err, data) {
+          res.send({"ok":(err==null), "error": err, "reply": data});
+        })
+      } else {
+        res.send({"ok":(err==null), "error": err, "reply": data});
+      }
+    })
+  }
+  else {
+    res.send({"ok":"true", "error": null, "reply": []});
+  }
+})
+
 app.post('/submitdoc', function(req,res) {
 
   

@@ -7,6 +7,14 @@
   each d, index in docs.rows
    - if (index == docs.rows.length - 1) {
     tr.docrow(data-bookmark="#{docs.bookmark}",data-total-rows="#{docs.total_rows}")
+      td
+        - if (d.status && d.status.toLowerCase() !== "deleted") {
+          input.input_checkbox.select_checkbox(type="checkbox", id="#{d.id}", name="#{d.id}")
+        - }
+        - else {
+          input.input_checkbox.select_checkbox(type="checkbox", disabled="true", id="#{d.id}", name="#{d.id}")
+        - }
+        label.input_checkbox-handle(for="#{d.id}")
       td #{d.status}
       td #{d.date}
       td
@@ -18,6 +26,14 @@
    - }
    - else {
     tr.docrow
+      td
+        - if (d.status && d.status.toLowerCase() !== "deleted") {
+          input.input_checkbox.select_checkbox(type="checkbox", id="#{d.id}", name="#{d.id}")
+        - }
+        - else {
+          input.input_checkbox.select_checkbox(type="checkbox", disabled="true", id="#{d.id}", name="#{d.id}")
+        - }
+        label.input_checkbox-handle(for="#{d.id}")
       td #{d.status}
       td #{d.date}
       td
@@ -28,3 +44,20 @@
         - }
    - }
 - }
+
+script(type="text/javascript").
+  $(document).ready(function() {
+    var checked = 0;
+    $('.select_checkbox')
+      .each(function() {
+        $(this).change(function() {
+          if($(this).is(":checked")) {
+            checked++;
+          } else {
+            checked--;
+          }
+          $('#deletebutton').prop('disabled', checked === 0);
+        });
+      });
+    $('#deletebutton').prop('disabled', checked === 0);
+  });
