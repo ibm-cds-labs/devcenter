@@ -1,6 +1,6 @@
 applications:
 - disk_quota: 1024M
-  host: devcenter
+  host: devcenter-cloudx
   name: devcenter
   path: .
   domain: mybluemix.net

@@ -415,6 +415,6 @@ This app can be configured within Bluemix using the following set of environment
 | PASSWORD     | the password used to login to the web UI | mypassword                                      |
 | SLACK_TOKEN  | list of valid Slack tokens               | abc123,def456                                   |
 | API_KEYS     | list of valid API keys                   | abc123,def456                                   |
-
+| CLOUDANT_HOST | the URL of the Cloudant service         | https://U:P@host.cloudant.com                   |
 
 
